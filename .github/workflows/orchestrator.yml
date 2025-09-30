@@ -23,12 +23,10 @@ jobs:
   docker:
     needs: tests
     uses: ./.github/workflows/docker-build-scan.yml
-    outputs:
-      image-tag: ${{ jobs.docker.outputs.image-tag }}
 
   deploy:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: docker
     uses: ./.github/workflows/deploy.yml
     with:
-      image-tag: ${{ jobs.docker.outputs.image-tag }}
+      image-tag: ${{ needs.docker.outputs.image-tag }}
