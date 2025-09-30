@@ -1,7 +1,9 @@
 name: Orchestrator
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - main
 
 jobs:
   lint:
@@ -22,5 +24,3 @@ jobs:
   deploy:
     needs: docker
     uses: ./.github/workflows/deploy.yml
-    with:
-      image-tag: ${{ needs.docker.outputs.image-tag }}
