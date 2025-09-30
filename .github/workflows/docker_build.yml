@@ -44,3 +44,8 @@ jobs:
         with:
           image-ref: flask-app:latest
           format: table
+
+      - name: Print workflow name
+        run:
+          echo "Workflow name: ${{ github.workflow }}"
+
