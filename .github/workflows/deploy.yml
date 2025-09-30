@@ -42,13 +42,20 @@ jobs:
           IMAGE_NAME="ghcr.io/${GITHUB_REPOSITORY_OWNER}/flask-app:${IMAGE_TAG}"
 
           sudo apt-get update && sudo apt-get install -y git
+
           git clone https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY_OWNER}/flask-infra.git
           cd flask-infra
+
+          # Detect default branch (could be main or master)
+          DEFAULT_BRANCH=$(git remote show origin | grep "HEAD branch" | cut -d ":" -f2 | tr -d ' ')
+          git checkout $DEFAULT_BRANCH
 
           sed -i "s|image: ghcr.io/.*/flask-app:.*|image: $IMAGE_NAME|g" Deployment.yaml
 
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+
           git add Deployment.yaml
           git commit -m "Update Deployment image to $IMAGE_TAG" || echo "No changes to commit"
-          git push origin main
+          git push origin $DEFAULT_BRANCH
+      
