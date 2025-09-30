@@ -30,5 +30,7 @@ jobs:
     needs: docker
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     uses: ./.github/workflows/deploy.yml
+    secrets:
+      GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
     with:
       image-tag: ${{ needs.docker.outputs.image-tag }}
