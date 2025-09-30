@@ -1,23 +1,17 @@
 name: Security Checks
 
 on:
-  workflow_call: # Allows this workflow to be called by another workflow
-    inputs:
-      lint-status:
-        required: false
-        type: string
-  workflow_dispatch: # Manual trigger allowed
+  workflow_dispatch:
 
 jobs:
   security:
     runs-on: ubuntu-latest
     outputs:
-      security-status: success # Output to pass to next workflow
+      security-status: ${{ steps.security.outcome }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        # Checks out repository code
 
       - name: Set up Python 3.11
         uses: actions/setup-python@v4
@@ -36,11 +30,10 @@ jobs:
           source venv/bin/activate
           pip install --upgrade pip setuptools
           pip install bandit pip-audit
-        # Installs security scanning tools
 
       - name: Run security scans
+        id: security
         run: |
           source venv/bin/activate
           bandit -r app.py
           pip-audit
-        # Runs security checks on the code

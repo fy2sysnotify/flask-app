@@ -1,33 +1,32 @@
 name: Lint & Type Check
 
-# This workflow can be called by other workflows or triggered manually
 on:
-  workflow_call: # Allows other workflows to call this workflow
-  workflow_dispatch: # Allows manual trigger
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
 
 jobs:
   lint:
-    runs-on: ubuntu-latest # Use latest Ubuntu runner
+    runs-on: ubuntu-latest
     outputs:
-      lint-status: ${{ steps.lint.outcome }} # Output of lint job
+      lint-status: ${{ steps.lint.outcome }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        # Checks out your repository so workflow can access files
 
       - name: Set up Python 3.11
         uses: actions/setup-python@v4
         with:
           python-version: "3.11"
-        # Installs Python 3.11
 
       - name: Cache pip dependencies
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-        # Caches pip dependencies for faster runs
 
       - name: Install lint dependencies
         run: |
@@ -35,7 +34,6 @@ jobs:
           source venv/bin/activate
           pip install --upgrade pip setuptools
           pip install flake8 mypy -r requirements.txt
-        # Creates virtualenv, installs linters (flake8, mypy)
 
       - name: Run linters
         id: lint
@@ -43,4 +41,3 @@ jobs:
           source venv/bin/activate
           flake8 app.py
           mypy app.py
-        # Runs linter checks and type checks
