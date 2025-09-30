@@ -6,6 +6,9 @@ on:
       image-tag:
         description: "Docker image tag"
         value: ${{ jobs.docker.outputs.image-tag }}
+    secrets:
+      GHCR_TOKEN:
+        required: true
 
 jobs:
   docker:

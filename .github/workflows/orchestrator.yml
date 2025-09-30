@@ -23,6 +23,8 @@ jobs:
   docker:
     needs: tests
     uses: ./.github/workflows/docker_build.yml
+    secrets:
+      GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
 
   deploy:
     needs: docker
