@@ -1,14 +1,14 @@
-name: docker-build-scan
+name: Docker Build & Scan
 
 on:
   workflow_call:
     outputs:
       image-tag:
         description: "Docker image tag"
-        value: ${{ jobs.docker_build.outputs.image-tag }}
+        value: ${{ jobs.docker.outputs.image-tag }}
 
 jobs:
-  docker_build:
+  docker:
     runs-on: ubuntu-latest
     outputs:
       image-tag: ${{ steps.build.outputs.image-tag }}
