@@ -32,5 +32,6 @@ jobs:
     uses: ./.github/workflows/deploy.yml
     secrets:
       GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
     with:
       image-tag: ${{ needs.docker.outputs.image-tag }}

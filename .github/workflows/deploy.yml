@@ -10,6 +10,8 @@ on:
     secrets:
       GHCR_TOKEN:
         required: true
+      GH_TOKEN:
+        required: true
 
 jobs:
   deploy:
