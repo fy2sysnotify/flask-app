@@ -10,11 +10,11 @@ on:
 
 jobs:
   lint:
-    uses: ./.github/workflows/lint-type-check.yml
+    uses: ./.github/workflows/lint.yml
 
   security:
     needs: lint
-    uses: ./.github/workflows/security-checks.yml
+    uses: ./.github/workflows/security.yml
 
   tests:
     needs: security
@@ -22,7 +22,7 @@ jobs:
 
   docker:
     needs: tests
-    uses: ./.github/workflows/docker-build-scan.yml
+    uses: ./.github/workflows/docker_build.yml
 
   deploy:
     needs: docker
