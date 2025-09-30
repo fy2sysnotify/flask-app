@@ -1,0 +1,30 @@
+name: orchestrator
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  lint:
+    uses: ./.github/workflows/lint-and-type-check.yml
+
+  security:
+    needs: lint
+    uses: ./.github/workflows/security-checks.yml
+
+  tests:
+    needs: security
+    uses: ./.github/workflows/unit-and-integration-tests.yml
+
+  docker-build-scan:
+    needs: tests
+    uses: ./.github/workflows/docker-build-scan.yml
+    with:
+      run-id: ${{ github.run_id }}
+
+  deploy:
+    needs: docker-build-scan
+    uses: ./.github/workflows/deploy-to-production.yml
+    with:
+      image-tag: ${{ needs.docker-build-scan.outputs.image-tag }}

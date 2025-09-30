@@ -1,10 +1,11 @@
-name: Deploy to Production
+name: deploy-to-production
 
 on:
-  workflow_run:
-    workflows: ["docker-build-scan"]
-    types:
-      - completed
+  workflow_call:
+    inputs:
+      image-tag:
+        required: true
+        type: string
 
 jobs:
   deploy:
