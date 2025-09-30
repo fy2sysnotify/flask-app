@@ -1,0 +1,41 @@
+name: Orchestrator
+
+# This workflow is the master controller of the pipeline
+on:
+  workflow_dispatch:
+
+jobs:
+  lint:
+    uses: ./.github/workflows/lint-type-check.yml
+    outputs:
+      lint-status: ${{ jobs.lint.outputs.lint-status }}
+
+  security:
+    needs: lint
+    uses: ./.github/workflows/security-checks.yml
+    with:
+      lint-status: ${{ needs.lint.outputs.lint-status }}
+    outputs:
+      security-status: ${{ jobs.security.outputs.security-status }}
+
+  tests:
+    needs: security
+    uses: ./.github/workflows/tests.yml
+    with:
+      security-status: ${{ needs.security.outputs.security-status }}
+    outputs:
+      test-status: ${{ jobs.tests.outputs.test-status }}
+
+  docker:
+    needs: tests
+    uses: ./.github/workflows/docker-build-scan.yml
+    with:
+      test-status: ${{ needs.tests.outputs.test-status }}
+    outputs:
+      image-tag: ${{ jobs.docker.outputs.image-tag }}
+
+  deploy:
+    needs: docker
+    uses: ./.github/workflows/deploy.yml
+    with:
+      image-tag: ${{ needs.docker.outputs.image-tag }}

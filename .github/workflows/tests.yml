@@ -1,14 +1,18 @@
 name: Unit & Integration Tests
 
 on:
-  workflow_run:
-    workflows: ["Security Checks"]
-    types:
-      - completed
+  workflow_call:
+    inputs:
+      security-status:
+        required: false
+        type: string
+  workflow_dispatch:
 
 jobs:
   tests:
     runs-on: ubuntu-latest
+    outputs:
+      test-status: success
 
     steps:
       - name: Checkout repository
@@ -31,8 +35,10 @@ jobs:
           source venv/bin/activate
           pip install --upgrade pip setuptools
           pip install pytest coverage pytest-cov -r requirements.txt
+        # Installs testing dependencies
 
       - name: Run tests with coverage
         run: |
           source venv/bin/activate
           PYTHONPATH=$(pwd) pytest --maxfail=1 --disable-warnings -q --cov=.
+        # Runs tests and collects coverage data

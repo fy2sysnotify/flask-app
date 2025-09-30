@@ -1,10 +1,12 @@
-name: docker-build-scan
+name: Docker Build & Scan
 
 on:
-  workflow_run:
-    workflows: ["Unit & Integration Tests"]
-    types:
-      - completed
+  workflow_call:
+    inputs:
+      test-status:
+        required: false
+        type: string
+  workflow_dispatch:
 
 jobs:
   docker_build:
@@ -31,16 +33,16 @@ jobs:
           IMAGE_TAG="${SANITIZED_REF_NAME}-${SHORT_SHA}"
           IMAGE_NAME="ghcr.io/${GITHUB_REPOSITORY_OWNER}/flask-app:${IMAGE_TAG}"
 
-          echo "Building Docker image ${IMAGE_NAME}..."
           docker build -t flask-app:latest .
-
           docker tag flask-app:latest $IMAGE_NAME
           docker push $IMAGE_NAME
 
           echo "image-tag=${IMAGE_TAG}" >> $GITHUB_OUTPUT
+        # Builds and pushes docker image, outputs image tag
 
       - name: Docker image security scan
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: flask-app:latest
           format: table
+        # Runs security scan on the Docker image
