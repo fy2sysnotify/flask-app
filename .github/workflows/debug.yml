@@ -1,0 +1,16 @@
+name: Debug Workflow Run
+
+on:
+  workflow_run:
+    workflows: ["Docker Build & Scan"]
+    types:
+      - completed
+
+jobs:
+  show-info:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "Triggered by: ${{ github.event.workflow_run.name }}"
+          echo "Branch: ${{ github.event.workflow_run.head_branch }}"
+          echo "Conclusion: ${{ github.event.workflow_run.conclusion }}"
