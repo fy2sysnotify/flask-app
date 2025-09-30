@@ -1,14 +1,15 @@
 name: Deploy to Production
 
 on:
-  workflow_run:
-    workflows: ["docker-build-scan"]
-    types:
-      - completed
+  workflow_call:
+    inputs:
+      image-tag:
+        required: true
+        type: string
 
 jobs:
   deploy:
-    if: github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.conclusion == 'success'
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
 
     steps:
@@ -24,7 +25,7 @@ jobs:
 
       - name: Pull Docker image
         run: |
-          IMAGE_TAG=${{ github.event.inputs.image-tag }}
+          IMAGE_TAG=${{ inputs.image-tag }}
           IMAGE_NAME="ghcr.io/${GITHUB_REPOSITORY_OWNER}/flask-app:${IMAGE_TAG}"
           docker pull $IMAGE_NAME
 
@@ -32,7 +33,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
-          IMAGE_TAG=${{ github.event.inputs.image-tag }}
+          IMAGE_TAG=${{ inputs.image-tag }}
           IMAGE_NAME="ghcr.io/${GITHUB_REPOSITORY_OWNER}/flask-app:${IMAGE_TAG}"
 
           sudo apt-get update && sudo apt-get install -y git
