@@ -12,4 +12,4 @@ def client():
 def test_home(client):
     response = client.get("/")
     assert response.status_code == 200
-    assert response.data.decode() == "Flask is up and running!"
+    assert response.data.decode() == "Hello There!"
