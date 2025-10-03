@@ -32,5 +32,5 @@ jobs:
         run: |
           source venv/bin/activate
           bandit -r app.py
-          pip-audit --json -o pip_audit_report.json
+          pip-audit --json > pip_audit_report.json
           cat pip_audit_report.json
