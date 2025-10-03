@@ -26,8 +26,7 @@ jobs:
         run: |
           python -m venv venv
           source venv/bin/activate
-          pip install --upgrade pip setuptools
-          pip install bandit pip-audit
+          pip install --upgrade pip setuptools bandit pip-audit
 
       - name: Run security scans
         run: |
