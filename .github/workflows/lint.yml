@@ -1,4 +1,4 @@
-name: Lint & Type Check
+name: Lint and Type Check
 
 on:
   workflow_call:
